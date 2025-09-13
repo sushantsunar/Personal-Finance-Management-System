@@ -6,6 +6,8 @@ import com.ss.pfms.service.TransactionService;
 import com.ss.pfms.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import com.ss.pfms.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +25,18 @@ public class DashboardController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/dashboard")
-    public String dashboard(Model model, @AuthenticationPrincipal User user) {
+    public String dashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // Fetch the User entity using the username (which is email)
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+        if (user == null) {
+            // handle error, e.g. redirect to login
+            return "redirect:/login";
+        }
+
         List<Transaction> transactions = transactionService.getAllTransactions(user);
 
         double totalIncome = transactions.stream()
@@ -52,7 +64,7 @@ public class DashboardController {
         return "dashboard";
     }
 
-    @PostMapping("/notifications/read/{id}")
+    @PostMapping("/dashboard/notifications/read/{id}")
     public String markNotificationAsRead(@PathVariable Long id) {
         notificationService.markAsRead(id);
         return "redirect:/dashboard";

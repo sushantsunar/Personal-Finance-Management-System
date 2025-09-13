@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .register-container {
+            background: #fff;
+            padding: 40px 35px 30px 35px;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(67,233,123,0.13);
+            width: 100%;
+            max-width: 400px;
+        }
+        .register-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #43e97b;
+            font-size: 2em;
+        }
+        .register-container label {
+            font-weight: 500;
+            color: #222;
+        }
+        .register-container input[type="email"],
+        .register-container input[type="text"],
+        .register-container input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 18px 0;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            font-size: 1em;
+            background: #f6f8fa;
+        }
+        .register-container button {
+            width: 100%;
+            padding: 12px;
+            background: #43e97b;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .register-container button:hover {
+            background: #38f9d7;
+        }
+        .register-container p {
+            text-align: center;
+            margin-top: 18px;
+            color: #555;
+        }
+        .register-container a {
+            color: #43e97b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .register-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <h2>Register</h2>
+    <form th:action="@{/register}" method="post" th:object="${user}">
+        <label>Email</label>
+        <input type="email" th:field="*{email}" required>
+        <label>First Name</label>
+        <input type="text" th:field="*{firstName}" required>
+        <label>Password</label>
+        <input type="password" th:field="*{password}" required>
+        <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a th:href="@{/login}">Login here</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transactions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffd700 0%, #ff6f61 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+        }
+        .transactions-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(255,215,0,0.13);
+            padding: 40px 30px 30px 30px;
+        }
+        h2 {
+            color: #ff6f61;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            background: #f6f8fa;
+            padding: 18px 18px 10px 18px;
+            border-radius: 12px;
+        }
+        form label {
+            font-weight: 500;
+            color: #222;
+            margin-bottom: 4px;
+        }
+        form input, form select {
+            padding: 10px;
+            border: 1px solid #dbeafe;
+            border-radius: 7px;
+            font-size: 1em;
+            background: #fff;
+            margin-bottom: 0;
+        }
+        form button {
+            padding: 10px 22px;
+            background: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        form button:hover {
+            background: #ffd700;
+            color: #222;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            background: #f6f8fa;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 14px 10px;
+            text-align: left;
+        }
+        th {
+            background: #ffd700;
+            color: #222;
+            font-size: 1.1em;
+        }
+        tr:nth-child(even) {
+            background: #fff;
+        }
+        tr:nth-child(odd) {
+            background: #f9fafb;
+        }
+        a.back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #ff6f61;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        a.back-link:hover {
+            color: #ffd700;
+        }
+        @media (max-width: 700px) {
+            .transactions-container {
+                padding: 18px 5vw;
+            }
+            form {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="transactions-container">
+    <h2>Transactions</h2>
+    <form th:action="@{/transactions}" method="post" th:object="${transaction}">
+        <div>
+            <label>Type</label><br>
+            <select th:field="*{type}">
+                <option value="INCOME">Income</option>
+                <option value="EXPENSE">Expense</option>
+            </select>
+        </div>
+        <div>
+            <label>Category</label><br>
+            <input type="text" th:field="*{category}" required>
+        </div>
+        <div>
+            <label>Amount</label><br>
+            <input type="number" th:field="*{amount}" required>
+        </div>
+        <div>
+            <label>Date</label><br>
+            <input type="date" th:field="*{date}" required>
+        </div>
+        <div>
+            <button type="submit">Add Transaction</button>
+        </div>
+    </form>
+    <h3 style="color:#ff6f61; margin-top:30px;">Transaction History</h3>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Amount</th>
+        </tr>
+        <tr th:each="t : ${transactions}">
+            <td th:text="${t.date}">2025-01-01</td>
+            <td th:text="${t.type}">INCOME</td>
+            <td th:text="${t.category}">Salary</td>
+            <td th:text="${t.amount}">1000</td>
+        </tr>
+    </table>
+    <a class="back-link" th:href="@{/dashboard}">&larr; Back to Dashboard</a>
+</div>
+</body>
+</html>

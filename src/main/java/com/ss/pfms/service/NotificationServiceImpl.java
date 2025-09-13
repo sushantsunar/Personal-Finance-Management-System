@@ -14,6 +14,7 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
+
     @Autowired
     private EmailService emailService;
 
@@ -38,5 +39,16 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findById(id).orElseThrow();
         notification.setRead(true);
         notificationRepository.save(notification);
+    }
+
+    public void sendWelcomeEmail(User user) {
+        // Use user.getEmail() safely now
+        String email = user.getEmail();
+        String name = user.getFirstName();
+
+        // Simple print to test
+        System.out.println("Sending welcome email to " + name + " at " + email);
+
+        // Here you can integrate actual email sending logic
     }
 }

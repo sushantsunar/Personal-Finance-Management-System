@@ -1,24 +1,63 @@
 package com.ss.pfms.entity;
 
-import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
-    @Entity
-    public class Notification {
+@Entity
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    private LocalDateTime createdAt;
 
-        private String message;
-        private boolean read = false;
-        private LocalDateTime createdAt = LocalDateTime.now();
+    private String message;
 
-        @ManyToOne
-        @JoinColumn(name = "user_id")
-        private User user;
+    @Column(name = "`read`")  // Escape reserved keyword
+    private boolean read;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // --- Getters and Setters ---
+    public Long getId() {
+        return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public User getUser() {             // <-- REQUIRED
+        return user;
+    }
+
+    public void setUser(User user) {    // <-- REQUIRED
+        this.user = user;
+    }
+}

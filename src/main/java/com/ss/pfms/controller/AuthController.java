@@ -27,11 +27,15 @@ public class AuthController {
         model.addAttribute("user", new User());
         return "register";
     }
-
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, Model model) {
+        // Set username as email for login
+        user.setUsername(user.getEmail());
+        // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(true); // optional, ensure user is active
         userRepository.save(user);
+
         model.addAttribute("success", "Registration successful! Please login.");
         return "redirect:/login";
     }

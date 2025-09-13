@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f8fa;
+            color: #222;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #4f8cff 0%, #3358e0 100%);
+            color: #fff;
+            width: 220px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar h2 {
+            margin-bottom: 40px;
+            font-size: 2em;
+            letter-spacing: 1px;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 15px 0;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        .sidebar a:hover {
+            color: #ffd700;
+        }
+        .main {
+            flex: 1;
+            padding: 40px 5vw;
+        }
+        .welcome {
+            font-size: 2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .summary-cards {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(80,120,255,0.07);
+            padding: 30px 40px;
+            min-width: 220px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card-title {
+            font-size: 1.1em;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .card-value {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #3358e0;
+        }
+        .chart-section {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(80,120,255,0.07);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .chart-section h3 {
+            margin-top: 0;
+        }
+        .notifications-section {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(80,120,255,0.07);
+            padding: 30px;
+        }
+        .notifications-section h3 {
+            margin-top: 0;
+        }
+        .notifications-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .notification-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f6f8fa;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 4px rgba(80,120,255,0.04);
+        }
+        .notification-message {
+            flex: 1;
+            color: #333;
+        }
+        .notification-form button {
+            background: #3358e0;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 7px 16px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+        .notification-form button:hover {
+            background: #4f8cff;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 20px 10vw;
+            }
+            .sidebar h2 {
+                margin-bottom: 0;
+            }
+            .main {
+                padding: 30px 3vw;
+            }
+            .summary-cards {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h2>PFMS</h2>
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/transactions}">Transactions</a>
+        <a th:href="@{/logout}">Logout</a>
+    </div>
+    <div class="main">
+        <div class="welcome">
+            Welcome, <span th:text="${user.firstName}">User</span>!
+        </div>
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-title">Total Income</div>
+                <div class="card-value" th:text="${totalIncome}">0</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Total Expense</div>
+                <div class="card-value" th:text="${totalExpense}">0</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Savings</div>
+                <div class="card-value" th:text="${savings}">0</div>
+            </div>
+        </div>
+        <div class="chart-section">
+            <h3>Expense Chart</h3>
+            <canvas id="expenseChart" width="400" height="200"></canvas>
+            <script th:inline="javascript">
+                var ctx = document.getElementById('expenseChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: [[${categories}]],
+                        datasets: [{
+                            data: [[${categoryAmounts}]],
+                            backgroundColor: [
+                                '#3358e0','#4f8cff','#ffd700','#ff6f61','#43e97b','#f857a6','#ffb347','#b19cd9'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#222',
+                                    font: { size: 14 }
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+        <div class="notifications-section">
+            <h3>Notifications</h3>
+            <ul class="notifications-list">
+                <li th:each="n : ${notifications}" class="notification-item">
+                    <span class="notification-message" th:text="${n.message}">Notification</span>
+                    <form class="notification-form" th:action="@{/notifications/read/{id}(id=${n.id})}" method="post">
+                        <button type="submit">Mark as Read</button>
+                    </form>
+                </li>
+                <li th:if="${#lists.isEmpty(notifications)}" style="text-align:center;color:#888;">No new notifications.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
